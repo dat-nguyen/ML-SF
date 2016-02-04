@@ -4,30 +4,23 @@ import subprocess
 import os
 import csv
 
-TMP_FILE        = '/home/dat/rmsd.tmp'
-
 def calcRMSD(refLigand, calcLigand):
-    f = open(TMP_FILE, "w")
-    run_cmd = "rms_analysis " + refLigand + " " + calcLigand
-    subprocess.call(run_cmd.split(), stdout=f)
+    #FILE = open(refLigand+".tmp", "w")
+    run_cmd = "rms_analysis {0} {1}".format(refLigand, calcLigand)
+    RMSDcalc = subprocess.Popen(run_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    RMSDresult = subprocess.Popen("tail -1".split(), stdin=RMSDcalc.stdout, stdout=subprocess.PIPE)
+    RMSDcalc.stdout.close()
+    RMSD = float(RMSDresult.communicate()[0].split()[0])
+    return(RMSD)
 
-def parseRMSDoutput(outputFile = TMP_FILE):
-    FILE  = open(outputFile, 'r')
-    for line in FILE:
-        if line.find('Distance') > -1:
-            pass
-            #break # found the identified line
-    #line = FILE.readline() # read the next line
-    return(line.split()[0])
-
-# return a list of RMSDs for all poses in poseDir, pose files are assumed to start with prefix gold_soln
-# \TODO: change the prefix
-def calcRMSDPoses(refLigand, poseDir, pattern = "gold_soln"):
+# return a list of RMSDs for all poses in poseDir, pose files are assumed to start with prefix and end with suffix
+def calcRMSDPoses(refLigand, poseDir, prefix = "gold_soln", suffix = ".mol2"):
     RMSDs = {}
     for ligand in os.listdir(poseDir):
-        if ligand.startswith(pattern):
-            rmsd = calcRMSD(refLigand, os.path.join(poseDir, ligand))
-            RMSDs[ligand] = parseRMSDoutput()
+        if ligand.startswith(prefix):
+            if ligand.endswith(suffix):
+                calcLigand = os.path.join(poseDir, ligand)
+                RMSDs[ligand] = calcRMSD(refLigand, calcLigand)
     return (RMSDs)
 
 #
