@@ -63,9 +63,15 @@ def createGlideDock(CASFyear):
     print("Finish creating config for {0}, {1} proteins.".format(CASFyear, len(data.keys())))
 
 def checkGlideDock(CASFyear, printing=False):
+    proteinDir  = CASF_PATH[CASFyear]
+    #indexFile   = CASF_CORE_INDEX[CASFyear]
+    indexFile   = CASF_REFINED_INDEX[CASFyear]
+    data = parse_index(proteinDir, indexFile)
+    print("Total complexes for {0}: {1}".format(CASFyear, len(data.keys())))
     print("Finishing {0} protein complexes for {1}.".format(countFinishDocking(CASFyear, printing), CASFyear))
 
 # very greedy, CAREFUL, always remove the first line in the setting file
+# \TODO: obsolete for now
 def modifyGlideSetting(CASFyear):
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "glide")
     for proteinID in os.listdir(scoreDir):
