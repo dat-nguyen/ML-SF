@@ -47,8 +47,8 @@ def createGlideDock(CASFyear):
                 SHFILE.write("$SCHRODINGER/run xglide.py -WAIT -NOJOBID {0}_grid.in\n".format(entry))
                 createGridConf(scoreOutputDir, entry)
                 # only dock with SP score (faster)
-                createGlideConf(scoreOutputDir, entry, score="SP")
-                SHFILE.write("$SCHRODINGER/glide -WAIT -NOJOBID {0}_SP.in\n".format(entry))
+                createGlideConf(scoreOutputDir, entry, score="XP")
+                SHFILE.write("$SCHRODINGER/glide -WAIT -NOJOBID {0}_XP.in\n".format(entry))
             else:
                 print("File not found ", proteinFile, ' or ', ligandFile, ' in ', os.path.join(proteinDir, entry))
                 quit()
@@ -68,7 +68,7 @@ def checkGlideDock(CASFyear, printing=False):
     indexFile   = CASF_REFINED_INDEX[CASFyear]
     data = parse_index(proteinDir, indexFile)
     print("Total complexes for {0}: {1}".format(CASFyear, len(data.keys())))
-    print("Finishing {0} protein complexes for {1}.".format(countFinishDocking(CASFyear, printing), CASFyear))
+    print("Finishing {0} protein complexes for {1}.".format(countFinishDocking(CASFyear, printing, glidescore="XP"), CASFyear))
 
 # very greedy, CAREFUL, always remove the first line in the setting file
 # \TODO: obsolete for now
@@ -83,8 +83,8 @@ def modifyGlideSetting(CASFyear):
     print("Finish.")
 
 CASFyear = '2007'
-#checkGlideDock('2007', printing=True)
-checkGlideDock('2012')
+checkGlideDock('2007', printing=False)
+#checkGlideDock('2012', printing=True)
 
 # CAREFUL
 #modifyGlideSetting('2007')

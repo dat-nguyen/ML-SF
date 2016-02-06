@@ -1,3 +1,4 @@
+# works with python3 now
 from random import sample#, uniform
 
 def rank_simple(vector):

@@ -13,10 +13,9 @@ def createDisjointList(masterList, childList):
     childDict = {}
     for aList in childList:
         childDict[str(aList).lower()] = ''
-        
     newList = []
     for aList in masterList:
-        if not childDict.has_key(aList):
+        if aList not in childDict.keys():
             newList.append(str(aList).lower())
     return newList
 
@@ -58,6 +57,7 @@ def readCSAR_KiFile(path):
         #print index, PDBname, pKd         
     INFILE.close()
 
+# split mol2 filePath in multiple mol2 files
 def splitMol2(filePath):
     FILE=open(filePath,'r')
     content=FILE.readlines()

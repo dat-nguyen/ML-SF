@@ -4,8 +4,8 @@ import subprocess
 import os
 import csv
 
+# calc RMSD between reference ligand and target ligand, using rms_analysis tool
 def calcRMSD(refLigand, calcLigand):
-    #FILE = open(refLigand+".tmp", "w")
     run_cmd = "rms_analysis {0} {1}".format(refLigand, calcLigand)
     RMSDcalc = subprocess.Popen(run_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     RMSDresult = subprocess.Popen("tail -1".split(), stdin=RMSDcalc.stdout, stdout=subprocess.PIPE)
