@@ -56,7 +56,7 @@ def readCSAR_KiFile(path):
         pKd     = float(line.split(' , ')[2])
         #print index, PDBname, pKd         
     INFILE.close()
-
+#################################################################
 # split mol2 filePath in multiple mol2 files
 def splitMol2(filePath):
     FILE=open(filePath,'r')
@@ -90,3 +90,4 @@ def splitMol2(filePath):
                 r.close()
                 i=i-1
     return 0 # for no error
+#################################################################

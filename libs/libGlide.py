@@ -75,5 +75,29 @@ def convertPosesToMOL2(CASFyear, glidescore="SP"):
                 libIO.splitMol2(poseFile+".mol2")
                 # remove the multimol2 after splitting in multiple files
                 os.remove(poseFile+".mol2")
-
     return (0) # for no error
+#################################################################
+# send number of scripts for CASFyear to all the host, using the shell and ssh
+def submitJob2Shell(CASFyear, numScript, poseGenProg="glide"):
+    import subprocess
+    processes = set()
+    print("Max job per host: ", JOB_PER_HOST)
+    max_processes = JOB_PER_HOST*len(HOST_LIST)
+
+    cmd_list = []
+    for i in range(1, numScript+1):
+        cmd_list.append(' sh {2}{3}_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], i, OUTPUT_DIR, poseGenProg))
+
+    for indexHost in range(0, len(HOST_LIST)):
+        for index in range(0, JOB_PER_HOST):
+            cmd = SSH_CMD + HOST_LIST[indexHost] + cmd_list[indexHost*JOB_PER_HOST+index]
+            #print(cmd)
+            processes.add(subprocess.Popen(cmd, shell=True))
+            if len(processes) >= max_processes:
+                os.wait()
+                processes.difference_update([p for p in processes if p.poll() is not None])
+
+    # check if all the child processes were closed
+    for p in processes:
+        if p.poll() is None:
+            p.wait()

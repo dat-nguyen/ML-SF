@@ -62,7 +62,7 @@ def createGlideDock(CASFyear):
             print(os.path.join(proteinDir, entry) + " is not exist\n")
     print("Finish creating config for {0}, {1} proteins.".format(CASFyear, len(data.keys())))
 
-def checkGlideDock(CASFyear, printing=False):
+def checkGlideDock(CASFyear, printing=False, glidescore="SP"):
     proteinDir  = CASF_PATH[CASFyear]
     #indexFile   = CASF_CORE_INDEX[CASFyear]
     indexFile   = CASF_REFINED_INDEX[CASFyear]
@@ -84,7 +84,7 @@ def modifyGlideSetting(CASFyear):
 
 CASFyear = '2007'
 checkGlideDock('2007', printing=False)
-#checkGlideDock('2012', printing=True)
+checkGlideDock('2012', printing=False)
 
 # CAREFUL
 #modifyGlideSetting('2007')
