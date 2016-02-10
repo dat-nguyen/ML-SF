@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/home/dat/libs/miniconda3/bin/python3.5
+# export PYTHONPATH=/mnt/zeus/dat/WORK/dev/ML-SF:$PYTHONPATH
 
 """
     create the script for docking in glide
@@ -83,7 +84,7 @@ def modifyGlideSetting(CASFyear):
     print("Finish.")
 
 CASFyear = '2007'
-checkGlideDock('2007', printing=False)
+checkGlideDock('2007', printing=True)
 checkGlideDock('2012', printing=False)
 
 # CAREFUL

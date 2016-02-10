@@ -13,6 +13,7 @@ SOURCE_CONF     = '/home/dat/WORK/docking_config/para_pose_PSO.xml'
 #################################################################
 def createParaDocksConf(CASFyear, proteinID):
 #   read the exemplary config and create the new config from given param
+    checkExistingBashFile(CASFyear, prefix="para")
     outputConf  = proteinID + '_PSO.xml'
     outputPath = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks", proteinID)
     outputConf  = os.path.join(outputPath, outputConf)
@@ -53,7 +54,6 @@ def createParaDocksConf(CASFyear, proteinID):
 #################################################################
 def createParaDocksPose(CASFyear):
     proteinDir  = CASF_PATH[CASFyear]
-    #indexFile   = CASF_CORE_INDEX[CASFyear]
     indexFile   = CASF_REFINED_INDEX[CASFyear]
     data = parse_index(proteinDir, indexFile)
     countProtein = 0
@@ -84,7 +84,8 @@ def createParaDocksPose(CASFyear):
                     numScript = numScript + 1
                     SHFILE  = open(os.path.join(OUTPUT_DIR, 'para_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], numScript)), 'a')
                 outputConf = createParaDocksConf(CASFyear, proteinID)
-
+                # move to the conf directory of the protein so paradocks will create mol2 to there (paradocks's bug)
+                SHFILE.write('cd {0}\n'.format(os.path.join(scoreDir, proteinID)))
                 SHFILE.write('/mnt/zeus/dat/WORK/dev/paradocks/build/bin/paradocks ' + outputConf + '\n')
 
     SHFILE.close()
@@ -93,7 +94,7 @@ def createParaDocksPose(CASFyear):
     return (numScript)
 #################################################################
 #print(createParaDocksConf('2007', '2fwp'))
-CASFyear = '2007'
+CASFyear = '2012'
 numScript = createParaDocksPose(CASFyear)
 submitJob2Shell(CASFyear, numScript, poseGenProg="para")
 #createParaDocksScore('2012')

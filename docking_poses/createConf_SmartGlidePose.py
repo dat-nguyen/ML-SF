@@ -8,6 +8,7 @@ from libs.libGlide import *
 
 #################################################################
 def createSmartGlideDock(CASFyear, Core = True):
+    checkExistingBashFile(CASFyear)
     proteinDir  = CASF_PATH[CASFyear]
     #indexFile   = CASF_CORE_INDEX[CASFyear]
     indexFile   = CASF_REFINED_INDEX[CASFyear]
@@ -65,6 +66,6 @@ def createSmartGlideDock(CASFyear, Core = True):
     return (numScript)
 #################################################################
 
-CASFyear= '2007'
+CASFyear= '2012'
 numScript = createSmartGlideDock(CASFyear)
 submitJob2Shell(CASFyear, numScript, poseGenProg="glide")

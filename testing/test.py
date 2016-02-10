@@ -26,3 +26,9 @@ data2 = parse_index(proteinDir, indexFile)
 
 #from libs import libGlide
 #libGlide.convertPosesToMOL2("2007", "SP")
+
+import glob
+if len(glob.glob("/home/dat/WORK/output/RMSD/v2007/glide/1uxa/XP/*.mol2")) > 0:
+    print("found sth")
+else:
+    print("nothing")

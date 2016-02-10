@@ -1,7 +1,7 @@
 from libs.libGlide import *
 from libs import libRMSD
 
-PoseGeneratedMethods = ["gold", "glide"]
+PoseGeneratedMethods = ["gold", "glide", "paradocks"]
 CASFyear = "2007"
 
 proteinDir  = CASF_PATH[CASFyear]
@@ -22,11 +22,11 @@ def checkGoldPose(CASFyear, dockingMethod):
         RMSDs = libRMSD.calcRMSDPoses(refLigand, os.path.join(poseDir, proteinID), prefix = "gold_soln", suffix = ".mol2")
         print(RMSDs)
 
-
-
+from libs import libGlide
+libGlide.convertPosesToMOL2("2007", "SP")
 
 #for dockingMethod in GOLD_DOCKING_SCORE:
 
-checkGoldPose(CASFyear, dockingMethod="goldscore")
+#checkGoldPose(CASFyear, dockingMethod="goldscore")
 
 #print(RMSD_DATA)

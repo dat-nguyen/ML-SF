@@ -56,6 +56,7 @@ def countFinishDocking(CASFyear, printing=False, glidescore="SP"):
 #################################################################
 def convertPosesToMOL2(CASFyear, glidescore="SP"):
     from libs import libIO
+    import glob
 
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "glide")
 
@@ -63,18 +64,21 @@ def convertPosesToMOL2(CASFyear, glidescore="SP"):
         proteinPath = os.path.join(scoreDir, proteinID)
         if os.path.isdir(proteinPath):
             poseFile = "{0}_{1}_lib".format(proteinID, glidescore)
-            if os.path.exists(os.path.join(proteinPath, poseFile+".maegz")):
-                posePath = os.path.join(proteinPath, glidescore)
-                if not os.path.exists(posePath):
-                    os.makedirs(posePath)
-                run_cmd = "/prog/schrodinger/2015u4/utilities/structconvert -imae {0}.maegz -omol2 {1}.mol2\n".\
-                            format(os.path.join(proteinPath, poseFile), os.path.join(posePath, poseFile))
-                os.system(run_cmd)
-                # change location to the pose dir
-                os.chdir(posePath)
-                libIO.splitMol2(poseFile+".mol2")
-                # remove the multimol2 after splitting in multiple files
-                os.remove(poseFile+".mol2")
+            # only convert and calc the RMSD if the ligands (mol2 files) are not there
+            if len( glob.glob(os.path.join(proteinPath, glidescore, "*.mol2")) ) == 0:
+                if os.path.exists(os.path.join(proteinPath, poseFile+".maegz")):
+                    posePath = os.path.join(proteinPath, glidescore)
+                    if not os.path.exists(posePath): os.makedirs(posePath)
+                    run_cmd = "/prog/schrodinger/2015u4/utilities/structconvert -imae {0}.maegz -omol2 {1}.mol2\n".\
+                                format(os.path.join(proteinPath, poseFile), os.path.join(posePath, poseFile))
+                    os.system(run_cmd)
+                    # change location to the pose dir
+                    os.chdir(posePath)
+                    libIO.splitMol2(poseFile+".mol2")
+                    # remove the multimol2 after splitting in multiple files
+                    os.remove(poseFile+".mol2")
+            else:
+                pass # do nothing
     return (0) # for no error
 #################################################################
 # send number of scripts for CASFyear to all the host, using the shell and ssh
@@ -101,3 +105,9 @@ def submitJob2Shell(CASFyear, numScript, poseGenProg="glide"):
     for p in processes:
         if p.poll() is None:
             p.wait()
+#################################################################
+def checkExistingBashFile(CASFyear, prefix="glide"):
+    import glob
+    for bashfile in glob.glob(os.path.join(OUTPUT_DIR, "{0}_{1}*.sh".format(prefix, CASF_VERSION[CASFyear]))):
+        os.remove(os.path.join(OUTPUT_DIR, bashfile))
+        print("Deleted "+bashfile)

@@ -33,7 +33,7 @@ EXT_SDF     = '.sdf'
 EXT_MAE     = '.maegz'
 
 # for subprocess sending job
-#HOST_LIST   = ['athena', 'artemis', 'aphrodite', 'hades', 'poseidon', 'eos', 'eros', 'hydra', 'hermes']
-HOST_LIST   = ['athena', 'artemis', 'hades', 'poseidon', 'eos', 'eros', 'hydra', 'hermes']
-JOB_PER_HOST = 3
+HOST_LIST   = ['athena', 'artemis', 'aphrodite', 'hades', 'poseidon', 'eos', 'eros', 'hermes', 'pan', 'hydra']
+#HOST_LIST   = ['athena', 'artemis', 'hades', 'poseidon', 'eos', 'eros', 'hydra', 'hermes']
+JOB_PER_HOST = 2
 SSH_CMD     = "ssh -t -X "
