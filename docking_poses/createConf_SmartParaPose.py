@@ -13,7 +13,6 @@ SOURCE_CONF     = '/home/dat/WORK/docking_config/para_pose_PSO.xml'
 #################################################################
 def createParaDocksConf(CASFyear, proteinID):
 #   read the exemplary config and create the new config from given param
-    checkExistingBashFile(CASFyear, prefix="para")
     outputConf  = proteinID + '_PSO.xml'
     outputPath = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks", proteinID)
     outputConf  = os.path.join(outputPath, outputConf)
@@ -53,6 +52,7 @@ def createParaDocksConf(CASFyear, proteinID):
 
 #################################################################
 def createParaDocksPose(CASFyear):
+    checkExistingBashFile(CASFyear, prefix="para")
     proteinDir  = CASF_PATH[CASFyear]
     indexFile   = CASF_REFINED_INDEX[CASFyear]
     data = parse_index(proteinDir, indexFile)
@@ -61,7 +61,7 @@ def createParaDocksPose(CASFyear):
 
     # number of docking jobs per host calculated by total number of proteins divided by
     # number of total threads which could be submitted at once
-    numDockingPerHost = (len(data.keys()) ) / (JOB_PER_HOST * len(HOST_LIST))
+    numDockingPerHost = (len(data.keys()) - countFinishDocking(CASFyear, dockingType="paradocks") ) / (JOB_PER_HOST * len(HOST_LIST))
     SHFILE  = open(os.path.join(OUTPUT_DIR, 'para_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], numScript)), 'a')
 
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks")

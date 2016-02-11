@@ -72,6 +72,17 @@ def createGlideScore(CASFyear):
         else:
             print(os.path.join(proteinDir, entry) + " is not exist\n")
     print("Finish creating config for {0}, {1} proteins.".format(CASFyear, len(data.keys())))
+# very greedy, CAREFUL, always remove the first line in the setting file
+# \TODO: obsolete for now
+def modifyGlideSetting(CASFyear):
+    scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "glide")
+    for proteinID in os.listdir(scoreDir):
+        if os.path.isdir(os.path.join(scoreDir, proteinID)):
+            settingFile = os.path.join(scoreDir, proteinID, proteinID+"_SP.in")
+            bashCommand = "sed -i '1d' "+settingFile
+#            print(bashCommand)
+            os.system(bashCommand)
+    print("Finish.")
 
 ##### obsolete #####
 def moveGlideScore(CASFyear):
@@ -102,6 +113,6 @@ CASFyear = '2007'
 #moveGlideScore('2012')
 #moveGlideScore('2013')
 #createGlideScore(CASFyear)
-#createGlideScore('2012')
-#createGlideScore('2013')
+createGlideScore('2013')
+createGlideScore('2014')
 

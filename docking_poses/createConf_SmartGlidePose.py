@@ -7,7 +7,7 @@
 from libs.libGlide import *
 
 #################################################################
-def createSmartGlideDock(CASFyear, Core = True):
+def createSmartGlideDock(CASFyear, glidescore="SP"):
     checkExistingBashFile(CASFyear)
     proteinDir  = CASF_PATH[CASFyear]
     #indexFile   = CASF_CORE_INDEX[CASFyear]
@@ -19,7 +19,7 @@ def createSmartGlideDock(CASFyear, Core = True):
 
     # number of docking jobs per host calculated by total number of proteins divided by
     # number of total threads which could be submitted at once
-    numDockingPerHost = (len(data.keys()) - countFinishDocking(CASFyear, glidescore="XP")) / (JOB_PER_HOST * len(HOST_LIST))
+    numDockingPerHost = (len(data.keys()) - countFinishDocking(CASFyear, glidescore=glidescore)) / (JOB_PER_HOST * len(HOST_LIST))
 
     SHFILE  = open(os.path.join(OUTPUT_DIR, 'glide_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], numScript)), 'a')
     SHFILE.write('export SCHRODINGER=/prog/schrodinger/2014u2\n')
@@ -37,7 +37,7 @@ def createSmartGlideDock(CASFyear, Core = True):
             # only create config file if the ligand and the protein exist
             if os.path.exists(proteinFile) and  os.path.exists(ligandFile):
                 # smarter means if the docking solution is already there, then no need to redock again (save time)
-                if not os.path.exists(os.path.join(scoreDir, proteinID, proteinID+'_XP_lib.maegz')):
+                if not os.path.exists(os.path.join(scoreDir, proteinID, '{0}_{1}_lib.maegz'.format(proteinID, glidescore))):
                     countProtein = countProtein + 1 # count the number of ligands to be submitted
                     if countProtein > (numDockingPerHost * (numScript)):
                         numScript = numScript + 1
@@ -48,13 +48,13 @@ def createSmartGlideDock(CASFyear, Core = True):
                     if not os.path.exists(scoreOutputDir): os.mkdir(scoreOutputDir)
                     SHFILE.write("cd {0}\n".format(scoreOutputDir))
                     # copy the ligand and protein in maegz format to destination
-                    #SHFILE.write("cp {0} .\ncp {1} .\n".format(ligandFile, proteinFile))
+                    SHFILE.write("cp {0} .\ncp {1} .\n".format(ligandFile, proteinFile))
                     # create grid config file and perform it
-                    #SHFILE.write("$SCHRODINGER/run xglide.py -WAIT -NOJOBID {0}_grid.in\n".format(proteinID))
-                    #createGridConf(scoreOutputDir, proteinID)
-                    # only dock with SP score (faster)
-                    createGlideConf(scoreOutputDir, proteinID, score="XP")
-                    SHFILE.write("$SCHRODINGER/glide -WAIT -NOJOBID {0}_XP.in\n".format(proteinID))
+                    SHFILE.write("$SCHRODINGER/run xglide.py -WAIT -NOJOBID {0}_grid.in\n".format(proteinID))
+                    createGridConf(scoreOutputDir, proteinID)
+                    # create score file
+                    createGlideConf(scoreOutputDir, proteinID, score=glidescore)
+                    SHFILE.write("$SCHRODINGER/glide -WAIT -NOJOBID {0}_{1}.in\n".format(proteinID, glidescore))
             else:
                 print("File not found ", proteinFile, ' or ', ligandFile, ' in ', os.path.join(proteinDir, proteinID))
                 quit()
@@ -67,5 +67,5 @@ def createSmartGlideDock(CASFyear, Core = True):
 #################################################################
 
 CASFyear= '2012'
-numScript = createSmartGlideDock(CASFyear)
+numScript = createSmartGlideDock(CASFyear, glidescore="SP")
 submitJob2Shell(CASFyear, numScript, poseGenProg="glide")

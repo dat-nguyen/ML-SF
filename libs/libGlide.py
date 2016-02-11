@@ -40,18 +40,21 @@ def createGlideConf(outputDir, proteinID, score):
     SCOREFILE.close()
     INFILE.close()
 #################################################################
-def countFinishDocking(CASFyear, printing=False, glidescore="SP"):
-    scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "glide")
+def countFinishDocking(CASFyear, printing=False, glidescore="SP", dockingType = "glide"):
+    scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], dockingType)
     countProtein = 0
     for proteinID in os.listdir(scoreDir):
         if os.path.isdir(os.path.join(scoreDir, proteinID)):
-            poseFile = "{0}_{1}_lib.maegz".format(proteinID, glidescore)
+            if dockingType == "glide":
+                poseFile = "{0}_{1}_lib.maegz".format(proteinID, glidescore)
+            elif dockingType == "paradocks":
+                poseFile = "paradocks_prot1_lig1_mol1_soln1.mol2"
             poseFileFullPath = os.path.join(scoreDir, proteinID, poseFile)
             if os.path.exists(poseFileFullPath):
                 countProtein = countProtein + 1
             if printing:
                 if not os.path.exists(poseFileFullPath):
-                    print(poseFile)
+                    print(proteinID + " " + poseFile)
     return (countProtein)
 #################################################################
 def convertPosesToMOL2(CASFyear, glidescore="SP"):
@@ -83,6 +86,7 @@ def convertPosesToMOL2(CASFyear, glidescore="SP"):
 #################################################################
 # send number of scripts for CASFyear to all the host, using the shell and ssh
 def submitJob2Shell(CASFyear, numScript, poseGenProg="glide"):
+    # \TODO: the number of poses still need to be larger than the number of hosts, otherwise get a out of index error
     import subprocess
     processes = set()
     print("Max job per host: ", JOB_PER_HOST)
@@ -91,11 +95,9 @@ def submitJob2Shell(CASFyear, numScript, poseGenProg="glide"):
     cmd_list = []
     for i in range(1, numScript+1):
         cmd_list.append(' sh {2}{3}_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], i, OUTPUT_DIR, poseGenProg))
-
     for indexHost in range(0, len(HOST_LIST)):
         for index in range(0, JOB_PER_HOST):
             cmd = SSH_CMD + HOST_LIST[indexHost] + cmd_list[indexHost*JOB_PER_HOST+index]
-            #print(cmd)
             processes.add(subprocess.Popen(cmd, shell=True))
             if len(processes) >= max_processes:
                 os.wait()
@@ -111,3 +113,11 @@ def checkExistingBashFile(CASFyear, prefix="glide"):
     for bashfile in glob.glob(os.path.join(OUTPUT_DIR, "{0}_{1}*.sh".format(prefix, CASF_VERSION[CASFyear]))):
         os.remove(os.path.join(OUTPUT_DIR, bashfile))
         print("Deleted "+bashfile)
+#################################################################
+def checkGlideDock(CASFyear, printing=False, glidescore="SP"):
+    proteinDir  = CASF_PATH[CASFyear]
+    #indexFile   = CASF_CORE_INDEX[CASFyear]
+    indexFile   = CASF_REFINED_INDEX[CASFyear]
+    data = parse_index(proteinDir, indexFile)
+    print("Total complexes for {0}: {1}".format(CASFyear, len(data.keys())))
+    print("Finishing {0} protein complexes for {1}.".format(countFinishDocking(CASFyear, printing, glidescore=glidescore), CASFyear))
