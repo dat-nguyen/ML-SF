@@ -79,6 +79,7 @@ def modifyGlideSetting(CASFyear):
     for proteinID in os.listdir(scoreDir):
         if os.path.isdir(os.path.join(scoreDir, proteinID)):
             settingFile = os.path.join(scoreDir, proteinID, proteinID+"_SP.in")
+            print(settingFile)
             bashCommand = "sed -i '1d' "+settingFile
 #            print(bashCommand)
             os.system(bashCommand)
@@ -108,11 +109,12 @@ def checkGlideScore(CASFyear):
                 print(proteinID+'_SP.scor')
 
 CASFyear = '2007'
+#modifyGlideSetting(CASFyear)
 #checkGlideScore('2007')
 #checkGlideScore('2013')
 #moveGlideScore('2012')
 #moveGlideScore('2013')
 #createGlideScore(CASFyear)
-createGlideScore('2013')
-createGlideScore('2014')
+#createGlideScore('2013')
+#createGlideScore('2014')
 

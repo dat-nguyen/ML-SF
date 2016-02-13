@@ -20,17 +20,33 @@ def calcRMSDPoses(refLigand, poseDir, prefix = "gold_soln", suffix = ".mol2"):
         if ligand.startswith(prefix):
             if ligand.endswith(suffix):
                 calcLigand = os.path.join(poseDir, ligand)
-                RMSDs[ligand] = calcRMSD(refLigand, calcLigand)
+                RMSDs[os.path.join(poseDir, ligand)] = calcRMSD(refLigand, calcLigand)
     return (RMSDs)
 
 #
 def writeRMSD2CSV(RMSDs, output):
-    FILE = open(output, 'w')
+    FILE = open(output, 'a')
     CSV = csv.writer(FILE, delimiter=',')
-    # write the csv header
-    CSV.writerow(["ID", "RMSDs"])
-
     for ligandID in RMSDs.keys():
         entry = [ligandID] + [RMSDs[ligandID]]
         CSV.writerow(entry)
     FILE.close()
+
+def readRMSDfromCSV(input):
+    FILE = open(input, 'r')
+    CSV = csv.reader(FILE, delimiter=',')
+    RMSDs = {}
+    for row in CSV:
+        RMSDs[row[0]] = row[1]
+    FILE.close()
+    return RMSDs
+
+# return True if typeOfPose is found, False if not found anything
+def IsPoseExistsFromCSV(CSVfile, typeOfPose):
+    FILE = open(CSVfile, 'r')
+    CSV = csv.reader(FILE, delimiter=',')
+    for row in CSV:
+        if str(row[0]).find(typeOfPose) > -1:
+            FILE.close()
+            return (True)
+    return (False)

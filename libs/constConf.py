@@ -14,6 +14,8 @@ PROTEIN_INDEXFILE = ['/home/dat/WORK/DB/PDBbind/v2014-core/INDEX_core_data.2013'
 OUTPUT_DIR = '/home/dat/WORK/output/'
 
 GOLD_DOCKING_SCORE = ['asp', 'plp', 'chemscore', 'goldscore']
+GLIDE_DOCKING_SCORE = ['SP', 'XP']
+
 
 #lPROTEIN_STATUS = ['unprepared', 'prepared']
 
@@ -33,7 +35,7 @@ EXT_SDF     = '.sdf'
 EXT_MAE     = '.maegz'
 
 # for subprocess sending job
-HOST_LIST   = ['athena', 'artemis', 'aphrodite', 'hades', 'poseidon', 'hydra', 'eos', 'eros', 'hermes']
-#HOST_LIST   = ['aphrodite', 'artemis', 'hades']
+HOST_LIST   = ['athena', 'artemis', 'aphrodite', 'hades', 'poseidon', 'hydra', 'eos', 'hermes']
+#HOST_LIST   = ['aphrodite', 'artemis', 'hades', 'athena', 'poseidon']
 JOB_PER_HOST = 2
 SSH_CMD     = "ssh -t -X "

@@ -6,12 +6,11 @@ from libs.constConf import *
 from libs.ioPDBbind import *
 from libs import libGlide
 
-#splitMol2(sys.argv[1])
-print(os.getcwd())
+#print(os.getcwd())
 #os.chdir("/home/dat/WORK/output/test/")
-#rmsds = libRMSD.calcRMSDPoses("ligand.mol2", "/home/dat/WORK/output/RMSD/v2007/gold/goldscore/1gvw/")
+#splitMol2(sys.argv[1])
 #rmsds = libRMSD.calcRMSDPoses("ligand.mol2", "/home/dat/WORK/output/test/", prefix="_")
-#libIO.splitMol2("test.mol2")
+
 CASFyear = "2012"
 proteinDir  = CASF_PATH[CASFyear]
 indexFile   = CASF_REFINED_INDEX[CASFyear]
@@ -22,13 +21,14 @@ proteinDir  = CASF_PATH[CASFyear]
 indexFile   = CASF_REFINED_INDEX[CASFyear]
 data = parse_index(proteinDir, indexFile)
 
-newProt = libIO.createDisjointList(data.keys(), data1.keys())
-print(len(newProt), newProt)
+#newProt = libIO.createDisjointList(data.keys(), data1.keys())
+#print(len(newProt), newProt)
 
-#libGlide.checkGlideDock('2007', printing=True ,glidescore="XP")
-#libGlide.checkGlideDock('2012', printing=True, glidescore="XP")
-#print(libGlide.countFinishDocking(CASFyear='2007', printing=True, dockingType="paradocks"))
-#print(libGlide.countFinishDocking(CASFyear='2012', printing=False, dockingType="paradocks"))
+#libGlide.checkGlideDock('2013', printing=False, glidescore="XP")
+#libGlide.checkGlideDock('2013', printing=False, glidescore="SP")
+#print(libGlide.countFinishDocking(CASFyear='2013', printing=False, dockingType="paradocks"))
+
+#libGlide.convertPosesToMOL2("2012", "SP")
 
 def copyExistingDocking(CASFyear, CASFbased = "2012"):
     # base data for copying is the PDBbind 2012
@@ -45,8 +45,6 @@ def copyExistingDocking(CASFyear, CASFbased = "2012"):
 
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "glide")
     if not os.path.exists(scoreDir): os.mkdir(scoreDir)
-    #scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks")
-    #if not os.path.exists(scoreDir): os.mkdir(scoreDir)
 
     for proteinID in data.keys():
         # if the protein complex is in the base
@@ -54,18 +52,6 @@ def copyExistingDocking(CASFyear, CASFbased = "2012"):
         if proteinID in data_base.keys():
             proteinDir = os.path.join(scoreDir, proteinID)
             if not os.path.exists(proteinDir): os.mkdir(proteinDir)
-            glidescore = "SP"
-            # only copying if the score dir does not exist in the new location
-            if not os.path.exists(os.path.join(proteinDir, glidescore)):
-                basePath = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFbased], "glide", proteinID)
-                scorePath =os.path.join(basePath, glidescore)
-                if os.path.exists(scorePath):
-                    run_cmd = "cp -r {0} {1}\n".format(scorePath, proteinDir)
-                    os.system(run_cmd)
-                    scoreFile = os.path.join(basePath, '{0}_{1}_lib.maegz'.format(proteinID, glidescore))
-                    run_cmd = "cp -r {0} {1}\n".format(scoreFile, proteinDir)
-                    os.system(run_cmd)
-                    print("copy {0} to {1}.".format(scorePath, proteinDir))
             glidescore = "XP"
             # only copying if the score dir does not exist in the new location
             if not os.path.exists(os.path.join(proteinDir, glidescore)):
@@ -78,8 +64,37 @@ def copyExistingDocking(CASFyear, CASFbased = "2012"):
                     run_cmd = "cp -r {0} {1}\n".format(scoreFile, proteinDir)
                     os.system(run_cmd)
                     print("copy {0} to {1}.".format(scorePath, proteinDir))
+# \TODO: merge with glide
+def copyExistingDockingPara(CASFyear, CASFbased = "2012"):
+    # base data for copying is the PDBbind 2012
+    proteinDir  = CASF_PATH[CASFbased]
+    indexFile   = CASF_REFINED_INDEX[CASFbased]
+    data_base = parse_index(proteinDir, indexFile)
 
+    proteinDir  = CASF_PATH[CASFyear]
+    indexFile   = CASF_REFINED_INDEX[CASFyear]
+    data = parse_index(proteinDir, indexFile)
 
-copyExistingDocking("2013", CASFbased = "2012")
-#import glob
-#if len(glob.glob("/home/dat/WORK/output/RMSD/v2007/glide/1uxa/XP/*.mol2")) > 0:
+    scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks")
+    if not os.path.exists(scoreDir): os.mkdir(scoreDir)
+
+    for proteinID in data.keys():
+        # if the protein complex is in the base
+        #  data, then copy instead of redock again
+        if proteinID in data_base.keys():
+            basePath = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFbased], "paradocks", proteinID)
+            if os.path.exists(basePath):
+                run_cmd = "cp -r {0} {1}\n".format(basePath, scoreDir)
+                os.system(run_cmd)
+                print("copy {0} to {1}.".format(basePath, scoreDir))
+
+#copyExistingDocking("2014", CASFbased = "2012")
+#copyExistingDockingPara("2014", CASFbased = "2012")
+
+def samplingRMSD(RMSDfile):
+    RMSDs = libRMSD.readRMSDfromCSV(RMSDfile)
+    RMSDsorted = sorted(RMSDs.items(), key=lambda x: x[1])
+    print(RMSDsorted)
+
+samplingRMSD("/home/dat/WORK/output/RMSD/v2007/_pool/5er1_RMSD.csv")
+

@@ -94,7 +94,7 @@ def createParaDocksPose(CASFyear):
     return (numScript)
 #################################################################
 #print(createParaDocksConf('2007', '2fwp'))
-CASFyear = '2012'
+CASFyear = '2014'
 numScript = createParaDocksPose(CASFyear)
 submitJob2Shell(CASFyear, numScript, poseGenProg="para")
 #createParaDocksScore('2012')

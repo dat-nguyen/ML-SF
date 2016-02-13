@@ -40,7 +40,7 @@ def createGlideConf(outputDir, proteinID, score):
     SCOREFILE.close()
     INFILE.close()
 #################################################################
-def countFinishDocking(CASFyear, printing=False, glidescore="SP", dockingType = "glide"):
+def countFinishDocking(CASFyear, printing=False, dockingType = "glide", glidescore="SP"):
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], dockingType)
     countProtein = 0
     for proteinID in os.listdir(scoreDir):
