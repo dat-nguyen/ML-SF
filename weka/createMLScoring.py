@@ -70,8 +70,8 @@ def createTrainingModel(batchFile, CASFset):
             SHFILE.write(line)
 
             for i in range(len(postCmdRoF_Methods)):
-                dumpModel = os.path.join(resultPath, "model", trainingPrefix+trainingSet+cmdClassifyName+"-"+
-                                          postCmdRoF_MethodsName[i]+"_"+desc+".model")
+                dumpModel = os.path.join(resultPath, "model", "{0}_RMSD_{1}_{2}_{3}-{4}.model"
+                                        .format(CASFset, trainingPrefix, cmdClassifyName, postCmdRoF_MethodsName[i], desc))
                 SHFILE.write("echo "+dumpModel+"\n")
                 line = cmdDumpModel1 + dumpModel + cmdDumpModel2 + postCmdRoF + postCmdRoF_Methods[i] + " > dummy_stats.txt \n"
                 print(line)
