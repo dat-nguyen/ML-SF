@@ -13,7 +13,9 @@ import os.path
 trainingPath    = "/home/dat/WORK/arff/"
 testPath        = "/home/dat/WORK/arff/"
 
-resultPath      = "/home/dat/WORK/output/results/2016-02-23/"
+resultPath        = "/home/dat/WORK/arff/"
+
+#resultPath      = "/home/dat/WORK/output/results/2016-02-23/"
 
 # for Jelena's data
 #testPath        = "/home/dat/arff/Jelena/"
@@ -36,7 +38,7 @@ cmdClassify  = "java -Xmx30000M weka.classifiers.meta.RotationForest -t train.ar
 
 cmdClassifyName = "RoF"
 
-postCmdRoF = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -A 5 -M -1\" -S 1 -num-slots 4 -I 10 " #\
+postCmdRoF = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -A 5 -M -1\" -S 1 -num-slots 4 -I 100 " #\
              #"-W weka.classifiers.meta.RandomCommittee -- -S 1 -num-slots 4 -I 10 "
 
 postCmdRoF_Methods  = ["-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0 -V 0.001 -S 1",
@@ -47,17 +49,18 @@ postCmdRoF_MethodsName = ["RT", "REP"]
 descList    = ["elementsv2-SIFt"]#, "elementsv2-SIFt-xscore"]
 #binsizeList = [0]
 #cutoff      = 12
-#trainingList = ["CASF12", "CASF13"]#, "CASF14"]
+CASF_SETS = ["CASFv2007", "CASF13"]#, "CASF14"]
 trainingList = ["sampling_clusters10", "sampling_100"]
 
 
-def createTrainingModel(batchFile, trainingSet):
+def createTrainingModel(batchFile, CASFset):
     SHFILE  = open(batchFile, 'a')
 
     for trainingPrefix in trainingList:
         for desc in descList:
             # create the right name for training set
-            trainingName = os.path.join(trainingPath, trainingPrefix+trainingSet+desc+".arff")
+            trainingName = os.path.join(trainingPath, "{0}_RMSD_{1}-{2}.arff"
+                                        .format(CASFset, trainingPrefix, desc))
             if not os.path.exists(trainingName):
                 print(trainingName)
                 quit()
@@ -145,6 +148,9 @@ def RMSD():
 if __name__=='__main__':
     '''
     '''
+    batchFile = "/home/dat/WORK/dev/weka-3-7-12/create_CASF07"
+    createTrainingModel(batchFile+"_training.sh", CASFset=CASF_SETS[0])
+
     #RMSD()
     #CSAR()
     #DUDE()
