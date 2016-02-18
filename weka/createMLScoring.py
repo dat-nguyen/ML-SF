@@ -1,7 +1,7 @@
 __author__ = 'dat'
 
 '''
-\TODO: optimize + write comments
+    create ML training model in weka
 
 '''
 
@@ -13,7 +13,7 @@ import os.path
 trainingPath    = "/home/dat/WORK/arff/"
 testPath        = "/home/dat/WORK/arff/"
 
-resultPath      = "/home/dat/WORK/output/results/2015-08-26/"
+resultPath      = "/home/dat/WORK/output/results/2016-02-23/"
 
 # for Jelena's data
 #testPath        = "/home/dat/arff/Jelena/"
@@ -44,11 +44,12 @@ postCmdRoF_Methods  = ["-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0 -V 0
 
 postCmdRoF_MethodsName = ["RT", "REP"]
 
-descList    = ["elementsv2-SIFt", "elementsv2-SIFt-xscore"]
-binsizeList = [0]
-cutoff      = 12
+descList    = ["elementsv2-SIFt"]#, "elementsv2-SIFt-xscore"]
+#binsizeList = [0]
+#cutoff      = 12
 #trainingList = ["CASF12", "CASF13"]#, "CASF14"]
-trainingList = ["CASF14"]
+trainingList = ["sampling_clusters10", "sampling_100"]
+
 
 def createTrainingModel(batchFile, trainingSet):
     SHFILE  = open(batchFile, 'a')

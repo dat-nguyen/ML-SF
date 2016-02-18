@@ -1,3 +1,6 @@
+#!/home/dat/libs/miniconda3/bin/python3.5
+# export PYTHONPATH=/mnt/zeus/dat/WORK/dev/ML-SF:$PYTHONPATH
+
 #######################################################################################
 # create a pool of RMSD data from all kind of docking poses
 # a RMSD pool for a protein will always be saved at _pool/{ProteinID}_RMSD.csv

@@ -1,3 +1,6 @@
+#!/home/dat/libs/miniconda3/bin/python3.5
+# export PYTHONPATH=/mnt/zeus/dat/WORK/dev/ML-SF:$PYTHONPATH
+
 __author__ = 'dat'
 
 '''
@@ -158,8 +161,9 @@ if __name__=='__main__':
     '''
     '''
     #CSAR()
-    #convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/CASFv2007_RMSD_sampling_clusters10-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
-    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Fidele/5P21-africa-XP_elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
+    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/CASFv2007_RMSD_sampling_clusters10-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
+    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/CASFv2007_RMSD_sampling_100-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
+    #convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Fidele/5P21-africa-XP_elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
     #for metaClass in metaClassifier.keys():
     #    for baseClass in baseClassifier.keys():
             #cmd =
