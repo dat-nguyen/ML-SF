@@ -67,5 +67,5 @@ def createSmartGlideDock(CASFyear, glidescore="SP"):
 #################################################################
 
 CASFyear= '2014'
-numScript = createSmartGlideDock(CASFyear, glidescore="SP")
+numScript = createSmartGlideDock(CASFyear, glidescore="XP")
 submitJob2Shell(CASFyear, numScript, poseGenProg="glide")

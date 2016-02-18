@@ -11,17 +11,12 @@ import collections
 import re
 
 
-# some constant
+# some constants
 PATHDB          = "/home/dat/WORK/DB/PDBbind/"
 
 CLUSTERFILE     = 'v2012-refined/INDEX_core_cluster.2012'
 
 PDBbindYear     = collections.namedtuple('Year', 'y2014 y2013 y2012 y2007')
-
-CASF_VERSION = {'2007' : "v2007",
-                '2012' : "v2012-refined",
-                '2013' : "v2013-refined",
-                '2014' : "v2014-refined"}
 
 CASF_NAME = {'2007' : "CASF07",
              '2012' : "CASF12",

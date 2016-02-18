@@ -6,7 +6,7 @@ __author__ = 'dat'
 '''
 
 import os.path
-
+import subprocess
 
 trainingPath    = "/home/dat/WORK/arff/"
 testPath        = "/home/dat/WORK/arff/"
@@ -15,7 +15,7 @@ resultPath      = "/home/dat/WORK/output/results/2015-08-26/"
 descList        = ["elementsv2-SIFt", "elementsv2-SIFt-xscore"]
 trainingList    = ["CASF07", "CASF12", "CASF13", "CASF14"]
 
-PREFIX_JAVA     = "java -Xmx25000M "
+PREFIX_JAVA     = "java -Xmx23000M "
 CLASSIFI        = "-t train.arff -T test.arff -c 1 -no-cv -o -classifications "
 OUTPUT_CSV      = "\"weka.classifiers.evaluation.output.prediction.CSV\""
 FILTER_PCA      = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -A 5 -M -1\""
@@ -39,6 +39,29 @@ baseClassifier  = {"RoT"  : "-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0
                    "REPT" : "-W weka.classifiers.trees.REPTree -- -M 2 -V 0.001 -N 3 -S 1 -L -1 -P -I 0.0 "}
 
 # COMMAND = PREFIX_JAVA + metaClassifier + CLASSIFI + OUTPUT_CSV + metaClassifierSetting + RANDOM_COMMITTEE + baseClassifier
+
+def convertCSV2ARFF(CSVfile, ARFFPath):
+    '''
+    convert CSVfile to ARFF format at ARFFPath using weka-3.6.11
+    '''
+    processes = set()
+    batchFile = "/home/dat/WORK/dev/weka-3-6-11/convertCSV2ARFF.sh"
+    SHFILE  = open(batchFile, 'w')
+    #SHFILE.write("export CLASSPATH=/home/dat/WORK/dev/weka-3-6-11/weka.jar\n")
+    #export CLASSPATH=/home/dat/WORK/dev/weka-3-7-13/weka.jar
+    SHFILE.write("cd /home/dat/WORK/dev/weka-3-6-11/\n")
+    if os.path.isfile(CSVfile):
+        SHFILE.write("java -Xmx6144m -cp weka.jar weka.core.converters.CSVLoader {0} > {1}.arff\n".
+                     format( CSVfile, os.path.join(ARFFPath, os.path.splitext(os.path.basename(CSVfile))[0])) )
+        SHFILE.close()
+        cmd = "sh {0}".format(batchFile)
+        processes.add(subprocess.Popen(cmd, shell=True))
+
+    # check if all the child processes were closed
+    for p in processes:
+        if p.poll() is None:
+            p.wait()
+        else: os.remove(batchFile)
 
 
 def createClassifyScriptPDBbind(batchFile):
@@ -126,15 +149,17 @@ def CSAR():
 #    for eachset in DBSet:
 #       createClassifyScript(batchFile, trainingSet="_refined_", DBsetPrefix="DIG10.2_", DBsetPostfix=eachset)
 
-    batchFile = "/Users/knight/MyClouds/Python/performScoring.sh"
-#    batchFile = "/home/dat/WORK/dev/weka-3-7-12/performScoring.sh"
+    #batchFile = "/Users/knight/MyClouds/Python/performScoring.sh"
+    batchFile = "/home/dat/WORK/dev/weka-3-7-12/performScoring.sh"
     createClassifyScriptPDBbind(batchFile)
 
 ############# MAIN PART ########################
 if __name__=='__main__':
     '''
     '''
-    CSAR()
+    #CSAR()
+    #convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/CASFv2007_RMSD_sampling_clusters10-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
+    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Fidele/5P21-africa-XP_elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
     #for metaClass in metaClassifier.keys():
     #    for baseClass in baseClassifier.keys():
             #cmd =

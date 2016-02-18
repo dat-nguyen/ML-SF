@@ -47,7 +47,7 @@ def countFinishDocking(CASFyear, printing=False, dockingType = "glide", glidesco
         if os.path.isdir(os.path.join(scoreDir, proteinID)):
             if dockingType == "glide":
                 poseFile = "{0}_{1}_lib.maegz".format(proteinID, glidescore)
-            elif dockingType == "paradocks":
+            elif dockingType.find("paradocks") > -1:
                 poseFile = "paradocks_prot1_lig1_mol1_soln1.mol2"
             poseFileFullPath = os.path.join(scoreDir, proteinID, poseFile)
             if os.path.exists(poseFileFullPath):

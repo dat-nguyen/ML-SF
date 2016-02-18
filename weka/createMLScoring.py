@@ -44,7 +44,7 @@ postCmdRoF_Methods  = ["-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0 -V 0
 
 postCmdRoF_MethodsName = ["RT", "REP"]
 
-descList    = ["elementsv2-SIFt_c12b0", "elementsv2-SIFt_c12b0-xscore"]
+descList    = ["elementsv2-SIFt", "elementsv2-SIFt-xscore"]
 binsizeList = [0]
 cutoff      = 12
 #trainingList = ["CASF12", "CASF13"]#, "CASF14"]
@@ -56,7 +56,7 @@ def createTrainingModel(batchFile, trainingSet):
     for trainingPrefix in trainingList:
         for desc in descList:
             # create the right name for training set
-            trainingName = os.path.join(trainingPath, trainingPrefix+trainingSet+desc+"_process.arff")
+            trainingName = os.path.join(trainingPath, trainingPrefix+trainingSet+desc+".arff")
             if not os.path.exists(trainingName):
                 print(trainingName)
                 quit()
@@ -110,7 +110,8 @@ def classifyTestModel(batchFile, trainingSet, DBsetPrefix, DBsetPostfix):
 def CSAR():
     batchFile = "/home/dat/WORK/dev/weka-3-7-12/performScoring_DIG"
     DBSet = ["SP", "XP", "asp", "plp", "chemscore", "goldscore"]
-    createTrainingModel(batchFile+"_training.sh", trainingSet="_refined_")
+    #createTrainingModel(batchFile+"_training.sh", trainingSet="_refined_")
+    createTrainingModel(batchFile+"_training.sh", trainingSet="_training_")
     for eachset in DBSet:
         classifyTestModel(batchFile+"_test.sh", trainingSet="_refined_", DBsetPrefix="DIG10.2_", DBsetPostfix=eachset)
 
@@ -145,5 +146,5 @@ if __name__=='__main__':
     '''
     #RMSD()
     #CSAR()
-    DUDE()
+    #DUDE()
 

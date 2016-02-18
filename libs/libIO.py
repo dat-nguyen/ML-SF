@@ -58,10 +58,14 @@ def readCSAR_KiFile(path):
     INFILE.close()
 #################################################################
 # split mol2 filePath in multiple mol2 files
-def splitMol2(filePath):
+def splitMol2(filePath, destDir = ""):
+    import os
     FILE=open(filePath,'r')
     content=FILE.readlines()
     FILE.close()
+    if destDir != "": os.chdir(destDir)
+    elif os.path.dirname(filePath) != "":
+        os.chdir(os.path.dirname(filePath))
     for i, v in enumerate(content):
         if v.find("@<TRIPOS>MOLECULE")!=(-1):
                 index=i

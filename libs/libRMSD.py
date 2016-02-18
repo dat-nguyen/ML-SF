@@ -32,12 +32,14 @@ def writeRMSD2CSV(RMSDs, output):
         CSV.writerow(entry)
     FILE.close()
 
-def readRMSDfromCSV(input):
+# WithRemovedLimit removes all the poses which excesses this value (in Anstrom)
+def readRMSDfromCSV(input, WithRemovedLimit = 10):
     FILE = open(input, 'r')
     CSV = csv.reader(FILE, delimiter=',')
     RMSDs = {}
     for row in CSV:
-        RMSDs[row[0]] = row[1]
+        if float(row[1]) < WithRemovedLimit:
+            RMSDs[row[0]] = row[1]
     FILE.close()
     return RMSDs
 

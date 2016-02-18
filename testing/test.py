@@ -24,12 +24,6 @@ data = parse_index(proteinDir, indexFile)
 #newProt = libIO.createDisjointList(data.keys(), data1.keys())
 #print(len(newProt), newProt)
 
-#libGlide.checkGlideDock('2013', printing=False, glidescore="XP")
-#libGlide.checkGlideDock('2013', printing=False, glidescore="SP")
-#print(libGlide.countFinishDocking(CASFyear='2013', printing=False, dockingType="paradocks"))
-
-#libGlide.convertPosesToMOL2("2012", "SP")
-
 def copyExistingDocking(CASFyear, CASFbased = "2012"):
     # base data for copying is the PDBbind 2012
     # init
@@ -89,12 +83,11 @@ def copyExistingDockingPara(CASFyear, CASFbased = "2012"):
                 print("copy {0} to {1}.".format(basePath, scoreDir))
 
 #copyExistingDocking("2014", CASFbased = "2012")
+#copyExistingDockingPara("2013", CASFbased = "2012")
 #copyExistingDockingPara("2014", CASFbased = "2012")
 
-def samplingRMSD(RMSDfile):
-    RMSDs = libRMSD.readRMSDfromCSV(RMSDfile)
-    RMSDsorted = sorted(RMSDs.items(), key=lambda x: x[1])
-    print(RMSDsorted)
-
-samplingRMSD("/home/dat/WORK/output/RMSD/v2007/_pool/5er1_RMSD.csv")
-
+#libGlide.checkGlideDock('2013', printing=False, glidescore="XP")
+#libGlide.checkGlideDock('2013', printing=False, glidescore="SP")
+#print(libGlide.countFinishDocking(CASFyear='2007', printing=True, dockingType="paradocks"))
+#print(libGlide.countFinishDocking(CASFyear='2013', printing=True, dockingType="paradocks"))
+#print(libGlide.countFinishDocking(CASFyear='2014', printing=False, dockingType="paradocks"))
