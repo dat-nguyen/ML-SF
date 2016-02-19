@@ -9,7 +9,6 @@ __author__ = 'dat'
 '''
 
 import os.path
-import subprocess
 
 trainingPath    = "/home/dat/WORK/arff/"
 testPath        = "/home/dat/WORK/arff/"
@@ -43,28 +42,6 @@ baseClassifier  = {"RoT"  : "-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0
 
 # COMMAND = PREFIX_JAVA + metaClassifier + CLASSIFI + OUTPUT_CSV + metaClassifierSetting + RANDOM_COMMITTEE + baseClassifier
 
-def convertCSV2ARFF(CSVfile, ARFFPath):
-    '''
-    convert CSVfile to ARFF format at ARFFPath using weka-3.6.11
-    '''
-    processes = set()
-    batchFile = "/home/dat/WORK/dev/weka-3-6-11/convertCSV2ARFF.sh"
-    SHFILE  = open(batchFile, 'w')
-    #SHFILE.write("export CLASSPATH=/home/dat/WORK/dev/weka-3-6-11/weka.jar\n")
-    #export CLASSPATH=/home/dat/WORK/dev/weka-3-7-13/weka.jar
-    SHFILE.write("cd /home/dat/WORK/dev/weka-3-6-11/\n")
-    if os.path.isfile(CSVfile):
-        SHFILE.write("java -Xmx6144m -cp weka.jar weka.core.converters.CSVLoader {0} > {1}.arff\n".
-                     format( CSVfile, os.path.join(ARFFPath, os.path.splitext(os.path.basename(CSVfile))[0])) )
-        SHFILE.close()
-        cmd = "sh {0}".format(batchFile)
-        processes.add(subprocess.Popen(cmd, shell=True))
-
-    # check if all the child processes were closed
-    for p in processes:
-        if p.poll() is None:
-            p.wait()
-        else: os.remove(batchFile)
 
 
 def createClassifyScriptPDBbind(batchFile):
@@ -161,9 +138,6 @@ if __name__=='__main__':
     '''
     '''
     #CSAR()
-    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/CASFv2007_RMSD_sampling_clusters10-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
-    convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/CASFv2007_RMSD_sampling_100-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
-    #convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Fidele/5P21-africa-XP_elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
     #for metaClass in metaClassifier.keys():
     #    for baseClass in baseClassifier.keys():
             #cmd =

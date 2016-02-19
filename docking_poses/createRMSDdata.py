@@ -9,6 +9,8 @@
 from libs.libGlide import *
 from libs import libRMSD
 
+import glob
+
 DockingMethods = ["gold", "glide", "paradocks"]
 
 #################################################################
@@ -57,14 +59,6 @@ def checkRMSDdata(CASFyear):
         for scorFunc in (GLIDE_DOCKING_SCORE + GOLD_DOCKING_SCORE):
             if not libRMSD.IsPoseExistsFromCSV(os.path.join(RMSDpath, RMSDfile), typeOfPose=scorFunc):
                 print("In {0} doesn't exist {1}!".format(RMSDfile, scorFunc))
-#################################################################
-
-#CASFyear = "2007"
-#preformRMSDcalculation("2007")
-#preformRMSDcalculation("2012")
-#preformRMSDcalculation("2013")
-#preformRMSDcalculation("2014")
-
 #################################################################
 def filterDict(dict, minValue, maxValue):
     new_dict = {}
@@ -116,14 +110,26 @@ def samplingRMSDdata(CASFyear, numSamples = 100):
             samplingFile = "{0}_sampling_100.csv".format(baseFileName)
             samplesRMSD = samplingRMSDmixing(os.path.join(RMSDpath, RMSDfile), numSamples=numSamples)
             libRMSD.writeRMSD2CSV(samplesRMSD, os.path.join(samplingPath, samplingFile))
-
-
 #################################################################
-
-
+def checkStatsRMSDdata(CASFyear, samplingType = "sampling_clusters10"):
+    samplingPath =  os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "_sampling")
+    numSamples = 0
+    for RMSDfile in glob.glob(os.path.join(samplingPath, "*{0}.csv".format(samplingType))):
+        # number of lines in a csv file is equivalent to number of samples for this protein
+        numLines = sum(1 for line in open(RMSDfile))
+        numSamples = numSamples + numLines
+    return (numSamples)
+#################################################################
+#preformRMSDcalculation("2007")
+#preformRMSDcalculation("2012")
+#preformRMSDcalculation("2013")
+#preformRMSDcalculation("2014")
+#################################################################
 #print(len(samplingRMSD("/home/dat/WORK/output/RMSD/v2007/_pool/5er1_RMSD.csv").keys()))
 #samplingRMSDdata("2007")
 #samplingRMSDdata("2012")
 #samplingRMSDdata("2013")
 #samplingRMSDdata("2014")
-
+#################################################################
+#print(checkStatsRMSDdata("2007", samplingType="sampling_clusters10"))
+#print(checkStatsRMSDdata("2007", samplingType="sampling_100"))
