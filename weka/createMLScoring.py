@@ -42,6 +42,7 @@ postCmdRoF = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -
              #"-W weka.classifiers.meta.RandomCommittee -- -S 1 -num-slots 4 -I 10 "
 postCmdRoFwithRC = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -A 5 -M -1\" -S 1 -num-slots 8 -I 100 "\
              "-W weka.classifiers.meta.RandomCommittee -- -S 1 -num-slots 4 -I 10 "
+
 postCmdRoF_Methods  = ["-W weka.classifiers.trees.RandomTree -- -K 0 -M 1.0 -V 0.001 -S 1",
                        "-W weka.classifiers.trees.REPTree -- -M 2 -V 0.001 -N 3 -S 1 -L -1 -P -I 0.0"]
 
