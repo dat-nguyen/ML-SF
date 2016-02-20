@@ -11,12 +11,12 @@ import subprocess, glob
 trainingPath    = "/home/dat/WORK/arff/"
 testPath        = "/home/dat/WORK/arff/"
 
-resultPath        = "/home/dat/WORK/arff/"
-#resultPath      = "/home/dat/WORK/output/results/2016-02-23/"
+#resultPath        = "/home/dat/WORK/arff/"
+resultPath      = "/home/dat/WORK/RESULTS/2016-02-23/"
 
-PREFIX_JAVA     = "java -Xmx30000M "
+PREFIX_JAVA     = "java -Xmx32000M "
 THREADNUM       = 8
-ITERATION       = 60
+ITERATION       = 66
 CLASSIFI        = "-t train.arff -T test.arff -c 1 -no-cv -o -classifications "
 OUTPUT_CSV      = "\"weka.classifiers.evaluation.output.prediction.CSV\""
 FILTER_PCA      = "\"weka.filters.unsupervised.attribute.PrincipalComponents -R 1.0 -A 5 -M -1\""
@@ -60,7 +60,7 @@ suffixTestModel     = " -T test.arff -c 1 -v -o -classifications " + OUTPUT_CSV 
 #            "-W weka.classifiers.meta.RandomCommittee -- -S 1 -num-slots 4 -I 10 "
 
 descList        = ["elementsv2-SIFt"]#, "elementsv2-SIFt-xscore"]
-CASF_SETS       = ["CASFv2007"]#, "CASFv2012", "CASF14"]
+CASF_SETS       = ["CASFv2007", "CASFv2013-refined"]#, "CASF14"]
 trainingList    = ["sampling_clusters10", "sampling_100"]
 
 #################################################################
@@ -105,7 +105,7 @@ def createTrainingModel(batchFile, CASFset, trainingPrefix, classifier = "Rotati
 
         if classifier != "RandomForest":
             for base in baseClassifier.keys():
-                dumpModel = os.path.join(resultPath, "model", "{0}_RMSD_{1}_{2}_{3}-{4}.model"
+                dumpModel = os.path.join(testPath, "model", "{0}_RMSD_{1}_{2}_{3}-{4}.model"
                                          .format(CASFset, trainingPrefix, shortName[classifier], base, desc))
                 SHFILE.write("echo {0}\n".format(dumpModel))
                 CMD_TRAIN = PREFIX_JAVA + metaClassifier[classifier] + prefixTrainModel.format(tmpTrainFile) + dumpModel + suffixTrainModel + \
@@ -114,7 +114,7 @@ def createTrainingModel(batchFile, CASFset, trainingPrefix, classifier = "Rotati
                 print(CMD_TRAIN)
                 SHFILE.write(CMD_TRAIN)
         else:
-            dumpModel = os.path.join(resultPath, "model", "{0}_RMSD_{1}_{2}-{3}.model"
+            dumpModel = os.path.join(testPath, "model", "{0}_RMSD_{1}_{2}-{3}.model"
                                      .format(CASFset, trainingPrefix, shortName[classifier], desc))
             SHFILE.write("echo {0}\n".format(dumpModel))
             CMD_TRAIN = PREFIX_JAVA + metaClassifier[classifier] + prefixTrainModel.format(tmpTrainFile) + dumpModel + suffixTrainModel + \
@@ -128,6 +128,7 @@ def createTrainingModel(batchFile, CASFset, trainingPrefix, classifier = "Rotati
 
 def classifyTestModel(batchFile, testSet, CASFset, trainingPrefix, classifier = "RotationForest"):
     SHFILE  = open(batchFile, 'a')
+    SHFILE.write("export CLASSPATH=/home/dat/WORK/dev/weka-3-7-12/weka.jar\n")
 
     for desc in descList:
         # create the right name for test set
@@ -141,7 +142,7 @@ def classifyTestModel(batchFile, testSet, CASFset, trainingPrefix, classifier = 
         SHFILE.write(line)
 
         for base in baseClassifier.keys():
-            dumpModel = os.path.join(resultPath, "test_model", "{0}_RMSD_{1}_{2}_{3}-{4}.model"
+            dumpModel = os.path.join(testPath, "test_model", "{0}_RMSD_{1}_{2}_{3}-{4}.model"
                                      .format(CASFset, trainingPrefix, shortName[classifier], base, desc))
             if not os.path.exists(dumpModel):
                 print("Training model not found ",dumpModel)
@@ -175,7 +176,7 @@ def DUDE():
     DBSet = ["RENI", "FGFR1", "ADA"]
     for eachset in DBSet:
         classifyTestModel(batchFile+"_test.sh", trainingSet="_refined_RMSD_", DBsetPrefix="DUD-E_", DBsetPostfix=eachset)
-        #classifyTestModel(batchFile+"_test.sh", trainingSet="_reduced_RMSD_", DBsetPrefix="DUD-E_", DBsetPostfix=eachset)
+        #classifyTestModel(batchFile+"_test.sh", trainingSet="_reduced_RMSD_", DBsetPrefix="DUD-E_", DBsetPostfix=eachset)<
 
 def RMSD():
     batchFile = "/home/dat/WORK/RMSD/performScoring_RMSD"
@@ -191,18 +192,19 @@ if __name__=='__main__':
     '''
     '''
     #convertCSV2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/CASFv2007_RMSD_sampling_clusters10-elementsv2-SIFt.csv", "/home/dat/WORK/arff/")
-    #convertCSVDir2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/processed/", "/home/dat/WORK/arff/")
-    #convertCSVDir2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Fidele/processed/", "/home/dat/WORK/arff/")
+    #convertCSVDir2ARFF("/home/dat/WORK/DB/DESCRIPTORS/Processed/", "/home/dat/WORK/arff/")
+    #convertCSVDir2ARFF("/home/dat/WORK/DB/DESCRIPTORS/RMSD/Processed/", "/home/dat/WORK/arff/")
 
     batchFile = "/home/dat/WORK/dev/weka-3-7-12/train_{0}.sh".format(CASF_SETS[0])
     #batchFile = "/home/dat/WORK/dev/weka-3-7-12/train_{0}_{1}.sh".format(CASF_SETS[0], trainingList[0])
     createTrainingModel(batchFile, CASFset=CASF_SETS[0], trainingPrefix=trainingList[0], tmpTrainFile="train.arff")
 
     #batchFile = "/home/dat/WORK/dev/weka-3-7-12/train_{0}_{1}.sh".format(CASF_SETS[0], trainingList[1])
-    createTrainingModel(batchFile, CASFset=CASF_SETS[0], trainingPrefix=trainingList[1], tmpTrainFile="train1.arff")
+    #createTrainingModel(batchFile, CASFset=CASF_SETS[0], trainingPrefix=trainingList[1], tmpTrainFile="train1.arff")
     #createTrainingModel(batchFile, CASFset=CASF_SETS[0], trainingPrefix=trainingList[0], classifier="RandomForest", tmpTrainFile="train2.arff")
     #createTrainingModel(batchFile, CASFset=CASF_SETS[0], trainingPrefix=trainingList[1], classifier="RandomForest", tmpTrainFile="train3.arff")
 
 
-    #batchFile = "/home/dat/WORK/dev/weka-3-7-12/test_CASF07"
-    #classifyTestModel(batchFile+"_5P21.sh", testSet = "5P21-africa-XP", CASFset=CASF_SETS[0], trainingPrefix=trainingList[0])
+    #batchFile = "/home/dat/WORK/dev/weka-3-7-12/testCASF07"
+    #classifyTestModel(batchFile+"_KDMs.sh", testSet = "T36_JMJ_Xray_test_gold", CASFset=CASF_SETS[0], trainingPrefix=trainingList[0])
+    #classifyTestModel(batchFile+"_KDMs.sh", testSet = "T36_JMJ_Xray_test_gold", CASFset=CASF_SETS[0], trainingPrefix=trainingList[1])
