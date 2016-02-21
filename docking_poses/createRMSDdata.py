@@ -131,6 +131,12 @@ def checkStatsRMSDdata(CASFyear, samplingDir = "_sampling", samplingType = "samp
 #samplingRMSDdata("2013")
 #samplingRMSDdata("2014")
 #################################################################
-print(checkStatsRMSDdata("2007", samplingType="sampling_clusters10"))
-print(checkStatsRMSDdata("2007", samplingType="sampling_100"))
-print(checkStatsRMSDdata("2007", samplingDir="_pool", samplingType="_RMSD"))
+def printStatsRMSD(CASFyear):
+    print(checkStatsRMSDdata(CASFyear, samplingType="sampling_clusters10"))
+    print(checkStatsRMSDdata(CASFyear, samplingType="sampling_100"))
+    print(checkStatsRMSDdata(CASFyear, samplingDir="_pool", samplingType="_RMSD"))
+#################################################################
+printStatsRMSD("2012")
+printStatsRMSD("2013")
+printStatsRMSD("2014")
+
