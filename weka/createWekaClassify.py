@@ -87,6 +87,7 @@ def createClassifyScriptPDBbind(batchFile):
 
     SHFILE.close()
 
+# \TODO: NOT WORKING
 def createClassifyScript(batchFile, trainingSet, DBsetPrefix, DBsetPostfix):
 
     SHFILE  = open(batchFile, 'a')
