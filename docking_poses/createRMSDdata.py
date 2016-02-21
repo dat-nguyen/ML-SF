@@ -111,8 +111,8 @@ def samplingRMSDdata(CASFyear, numSamples = 100):
             samplesRMSD = samplingRMSDmixing(os.path.join(RMSDpath, RMSDfile), numSamples=numSamples)
             libRMSD.writeRMSD2CSV(samplesRMSD, os.path.join(samplingPath, samplingFile))
 #################################################################
-def checkStatsRMSDdata(CASFyear, samplingType = "sampling_clusters10"):
-    samplingPath =  os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "_sampling")
+def checkStatsRMSDdata(CASFyear, samplingDir = "_sampling", samplingType = "sampling_clusters10"):
+    samplingPath =  os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], samplingDir)
     numSamples = 0
     for RMSDfile in glob.glob(os.path.join(samplingPath, "*{0}.csv".format(samplingType))):
         # number of lines in a csv file is equivalent to number of samples for this protein
@@ -131,5 +131,6 @@ def checkStatsRMSDdata(CASFyear, samplingType = "sampling_clusters10"):
 #samplingRMSDdata("2013")
 #samplingRMSDdata("2014")
 #################################################################
-#print(checkStatsRMSDdata("2007", samplingType="sampling_clusters10"))
-#print(checkStatsRMSDdata("2007", samplingType="sampling_100"))
+print(checkStatsRMSDdata("2007", samplingType="sampling_clusters10"))
+print(checkStatsRMSDdata("2007", samplingType="sampling_100"))
+print(checkStatsRMSDdata("2007", samplingDir="_pool", samplingType="_RMSD"))
