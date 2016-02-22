@@ -73,8 +73,8 @@ suffixTestModel     = " -T {0} -c 1 -v -o -classifications " + OUTPUT_CSV + " "
 #            "-W weka.classifiers.meta.RandomCommittee -- -S 1 -num-slots 4 -I 10 "
 
 DESC_LIST        = ["elementsv2-SIFt"]#, "elementsv2-SIFt-xscore"]
-#CASF_SETS       = ["CASFv2007", "CASFv2013-refined", "CASFv2014-refined"]
-CASF_SETS       = ["CASFv2014-refined"]
+#CASF_SETS       = ["CASFv2007", "CASFv2012-refined", "CASFv2013-refined", "CASFv2014-refined"]
+CASF_SETS       = ["CASFv2012-refined"]
 TRAIN_SETS      = ["sampling_clusters10", "sampling_100"]
 
 #################################################################
@@ -308,9 +308,8 @@ def classifyResult_athena():
     for CASFset in CASF_SETS:
         for trainSet in TRAIN_SETS:
             createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_2016-02-23")
-            createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_2016-02-23", classifier="RandomForest", baseCl="")
             createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_Fidele_2016-02-23")
-            createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_Fidele_2016-02-23", classifier="RandomForest", baseCl="")
+
 #################################################################
 def classifyResult_poseidon():
     batchFile = "/home/dat/WORK/dev/weka-3-7-12/classify_poseidon.sh"
@@ -319,6 +318,9 @@ def classifyResult_poseidon():
         for trainSet in TRAIN_SETS:
             createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_2016-02-23", classifier="RotationForest", baseCl="RoT")
             createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_Fidele_2016-02-23", classifier="RotationForest", baseCl="RoT")
+            createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_2016-02-23", classifier="RandomForest", baseCl="")
+            createClassify(batchFile, CASFset=CASFset, trainingPrefix=trainSet, testSet="targets_Fidele_2016-02-23", classifier="RandomForest", baseCl="")
+
 ############# MAIN PART ########################
 if __name__=='__main__':
     '''
@@ -329,5 +331,5 @@ if __name__=='__main__':
     #createTrainAll()
     #createTestFidele()
     #createTestAll()
-    #classifyResult_athena()
-#    classifyResult_poseidon()
+    classifyResult_athena()
+    classifyResult_poseidon()

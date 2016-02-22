@@ -61,7 +61,8 @@ def createParaDocksPose(CASFyear):
 
     # number of docking jobs per host calculated by total number of proteins divided by
     # number of total threads which could be submitted at once
-    numDockingPerHost = (len(data.keys()) - countFinishDocking(CASFyear, dockingType="paradocks") ) / (JOB_PER_HOST * len(HOST_LIST))
+    print(countFinishDocking(CASFyear, dockingType="paradocks"))
+    numDockingPerHost = (len(data.keys()) - countFinishDocking(CASFyear, dockingType="paradocks_pScore") ) / (JOB_PER_HOST * len(HOST_LIST))
     SHFILE  = open(os.path.join(OUTPUT_DIR, 'para_{0}_{1}.sh'.format(CASF_VERSION[CASFyear], numScript)), 'a')
 
     scoreDir    = os.path.join(OUTPUT_DIR, "RMSD", CASF_VERSION[CASFyear], "paradocks_pScore")
